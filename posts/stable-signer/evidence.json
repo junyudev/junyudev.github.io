@@ -1,0 +1,331 @@
+{
+  "schema": "stable-signer.article-evidence.v1",
+  "status": "Three recorded demonstration cases, not a benchmark or historical training reproduction.",
+  "source_revision": "382da26bef8938c6d309e57ee0ebab1bb94b0e5a",
+  "source_manifests": {
+    "examples": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/examples/manifest.json",
+    "perturbations": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/perturbations/manifest.json",
+    "runtime": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/artifact-manifest.json"
+  },
+  "runtime": {
+    "model_id": "stabilityai/sdxl-turbo",
+    "model_revision": "71153311d3dbb46851df1931d3ca6e939de83304",
+    "mapper_output_size": 149536,
+    "mapper_input_encoding": "binary",
+    "hidden_dims": [],
+    "files": {
+      "mapping.safetensors": "34cbcf0af434b0b77fdd6ef67d2483161134c939e99aa40fd3d5a76b6a610c02",
+      "extractor.safetensors": "f27fbf00f74414e2d7b874f157185072d36c365bad49dce05138b21212be1c56"
+    },
+    "dtype": "float32",
+    "steps": 4,
+    "resolution": 512,
+    "guidance_scale": 0
+  },
+  "protocol": {
+    "extraction": "extract from displayed RGB8 image, ImageNet normalization, threshold 0",
+    "difference": "Absolute RGB8 difference, multiplied by 28 and clipped for display.",
+    "crop": "Retain approximately 90% of width and height; center crop, Lanczos resize to 512x512.",
+    "brightness": "PIL brightness factor 1.5.",
+    "combined": "Center crop retaining 50% width and height, Lanczos resize to 512x512, brightness factor 1.5, JPEG quality 80.",
+    "collusion": "Equal mean of complete decoder weight modulations on a shared latent; not factor or image averaging.",
+    "selection": "fixed prompts/seeds; first result, no recovery filtering"
+  },
+  "samples": {
+    "Observatory": {
+      "prompt": "A quiet observatory above a sea of clouds, editorial photography",
+      "seed": 23,
+      "message": "010101010101010101010101010101010101010101010101",
+      "generation": {
+        "timestamp": "2026-09-21T10:46:39.436226+00:00",
+        "space_revision": "03ecb4d1e7631a5061d934a0a09c2c2579f057dd",
+        "extracted": "010101010101010100010101010101010101010101010100",
+        "matching_bits": 46
+      },
+      "attacks": {
+        "crop": {
+          "timestamp": "2026-09-21T11:07:09.482946+00:00",
+          "space_revision": "285600d4a017dde61f85243a69ede3c717d1ef18",
+          "extracted": "010101010101010101010101010101010101010101010111",
+          "matching_bits": 47
+        },
+        "brightness": {
+          "timestamp": "2026-09-21T11:07:16.392039+00:00",
+          "space_revision": "285600d4a017dde61f85243a69ede3c717d1ef18",
+          "extracted": "010101010101010100010101010101010101010101010101",
+          "matching_bits": 47
+        },
+        "combined": {
+          "timestamp": "2026-09-21T11:07:23.565967+00:00",
+          "space_revision": "285600d4a017dde61f85243a69ede3c717d1ef18",
+          "extracted": "110101010100010110110101100001101101111100010111",
+          "matching_bits": 33
+        }
+      },
+      "collusion": {
+        "timestamp": "2026-09-21T11:07:34.912200+00:00",
+        "space_revision": "285600d4a017dde61f85243a69ede3c717d1ef18",
+        "second_message": "100101101001011010010110100101101001011010010110",
+        "extracted": "000101110101011000010101100101101101011011010110",
+        "matching_bits_a": 33,
+        "matching_bits_b": 39
+      }
+    },
+    "Kingfisher": {
+      "prompt": "A kingfisher perched on a mossy branch beside a river, wildlife photography",
+      "seed": 41,
+      "message": "001100110011001100110011001100110011001100110011",
+      "generation": {
+        "timestamp": "2026-09-21T10:46:48.766864+00:00",
+        "space_revision": "03ecb4d1e7631a5061d934a0a09c2c2579f057dd",
+        "extracted": "001100110011001100110011001100110011001100110011",
+        "matching_bits": 48
+      },
+      "attacks": {
+        "crop": {
+          "timestamp": "2026-09-21T11:10:29.815924+00:00",
+          "space_revision": "285600d4a017dde61f85243a69ede3c717d1ef18",
+          "extracted": "001100110011001100110011001100110011001100110011",
+          "matching_bits": 48
+        },
+        "brightness": {
+          "timestamp": "2026-09-21T11:10:43.172684+00:00",
+          "space_revision": "285600d4a017dde61f85243a69ede3c717d1ef18",
+          "extracted": "001100110011001100110011001100110011001100110011",
+          "matching_bits": 48
+        },
+        "combined": {
+          "timestamp": "2026-09-21T11:10:51.876061+00:00",
+          "space_revision": "285600d4a017dde61f85243a69ede3c717d1ef18",
+          "extracted": "011100010111011000110001001000100010011100110001",
+          "matching_bits": 37
+        }
+      },
+      "collusion": {
+        "timestamp": "2026-09-21T11:11:02.530594+00:00",
+        "space_revision": "285600d4a017dde61f85243a69ede3c717d1ef18",
+        "second_message": "100101101001011010010110100101101001011010010110",
+        "extracted": "001100110001011010010111100100101001001010010011",
+        "matching_bits_a": 34,
+        "matching_bits_b": 38
+      }
+    },
+    "Ceramics": {
+      "prompt": "A blue ceramic teapot and a bowl of oranges on a wooden table, soft window light",
+      "seed": 67,
+      "message": "011010010110100101101001011010010110100101101001",
+      "generation": {
+        "timestamp": "2026-09-21T10:46:58.684238+00:00",
+        "space_revision": "03ecb4d1e7631a5061d934a0a09c2c2579f057dd",
+        "extracted": "011010010110100101101001011010010110100101101001",
+        "matching_bits": 48
+      },
+      "attacks": {
+        "crop": {
+          "timestamp": "2026-09-21T11:11:23.516292+00:00",
+          "space_revision": "285600d4a017dde61f85243a69ede3c717d1ef18",
+          "extracted": "011010010110100101101001011010010110100101101001",
+          "matching_bits": 48
+        },
+        "brightness": {
+          "timestamp": "2026-09-21T11:11:26.581330+00:00",
+          "space_revision": "285600d4a017dde61f85243a69ede3c717d1ef18",
+          "extracted": "011010010110100101101001011010010110100101101001",
+          "matching_bits": 48
+        },
+        "combined": {
+          "timestamp": "2026-09-21T11:11:45.184606+00:00",
+          "space_revision": "285600d4a017dde61f85243a69ede3c717d1ef18",
+          "extracted": "011010010011110011101001000010000110001100111001",
+          "matching_bits": 36
+        }
+      },
+      "collusion": {
+        "timestamp": "2026-09-21T11:11:53.680283+00:00",
+        "space_revision": "285600d4a017dde61f85243a69ede3c717d1ef18",
+        "second_message": "100101101001011010010110100101101001011010010110",
+        "extracted": "101111100001111100001100000010101010010011001111",
+        "matching_bits_a": 20,
+        "matching_bits_b": 28
+      }
+    }
+  },
+  "parameter_diagnostics": {
+    "device": "cpu",
+    "formula": "M = force * (A @ B); W' = W * (1 + M)",
+    "color_scale": "Shared symmetric log per layer; linear within +/-1%; no clipping",
+    "norm": "FP64 norm of actual FP32 weight difference / full FP32 convolution weight norm",
+    "messages": [
+      "010101010101010101010101010101010101010101010101",
+      "100101101001011010010110100101101001011010010110"
+    ],
+    "relative_norms": {
+      "up_blocks.1.resnets.0.conv1": [
+        0.05998011532339878,
+        0.0594180995652286,
+        0.058479352802569814
+      ],
+      "up_blocks.1.resnets.0.conv2": [
+        0.061802268390361674,
+        0.061378958859455546,
+        0.05998562623850723
+      ],
+      "up_blocks.1.resnets.1.conv1": [
+        0.07260983732896238,
+        0.0719882103417275,
+        0.07096740367541016
+      ],
+      "up_blocks.1.resnets.1.conv2": [
+        0.07639896757614457,
+        0.07732846916083852,
+        0.07489255189631801
+      ],
+      "up_blocks.1.resnets.2.conv1": [
+        0.11898244225736168,
+        0.11809157135767029,
+        0.11697866471004728
+      ],
+      "up_blocks.1.resnets.2.conv2": [
+        0.24669741233650766,
+        0.24828388158294498,
+        0.24562246363701723
+      ],
+      "up_blocks.1.upsamplers.0.conv": [
+        0.11443554812759177,
+        0.11564368401726562,
+        0.11287667171320445
+      ],
+      "up_blocks.2.resnets.0.conv1": [
+        0.27432399562723586,
+        0.27320885028729863,
+        0.27074987952643687
+      ],
+      "up_blocks.2.resnets.0.conv2": [
+        0.27737437723182584,
+        0.28731528639090775,
+        0.2750481610944153
+      ],
+      "up_blocks.2.resnets.0.conv_shortcut": [
+        0.17287384058662209,
+        0.17398065161803244,
+        0.16878687932400926
+      ],
+      "up_blocks.2.resnets.1.conv1": [
+        0.36710845347494264,
+        0.36501358144216056,
+        0.35960876509818723
+      ],
+      "up_blocks.2.resnets.1.conv2": [
+        0.325449681138174,
+        0.3170293612584248,
+        0.31048735116252935
+      ],
+      "up_blocks.2.resnets.2.conv1": [
+        0.2629950351566006,
+        0.257270021691704,
+        0.24897901290234195
+      ],
+      "up_blocks.2.resnets.2.conv2": [
+        0.4207533744439182,
+        0.4200541877914835,
+        0.40458122081963255
+      ],
+      "up_blocks.2.upsamplers.0.conv": [
+        0.23843751852731385,
+        0.2372572664774075,
+        0.2294790386221163
+      ]
+    }
+  },
+  "assets": {
+    "images/observatory-original.png": {
+      "sha256": "ba77efae9788f23a03be7799b1937abe2a578ed5c83aec38114c109ef2e128bc",
+      "bytes": 327390,
+      "file": "0-original.png",
+      "source": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/examples/0-original.png"
+    },
+    "images/observatory-watermarked.png": {
+      "sha256": "dfafe0d38b2f6228e6ccc47853fd1da2855f51bba2519ff02cf6ea69da89d5cb",
+      "bytes": 333143,
+      "file": "0-watermarked.png",
+      "source": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/examples/0-watermarked.png"
+    },
+    "images/observatory-difference.png": {
+      "sha256": "bc37724a148df2a30bb0efa407e3fa4b299bbd9ffc7b409b0d2d91eaf752af24",
+      "bytes": 281680,
+      "file": "0-difference.png",
+      "source": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/examples/0-difference.png"
+    },
+    "images/kingfisher-original.png": {
+      "sha256": "0a5a62d8cc5741752899452874beab7e464fb7abb7774e26070a7a054b1014c7",
+      "bytes": 345094,
+      "file": "1-original.png",
+      "source": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/examples/1-original.png"
+    },
+    "images/kingfisher-watermarked.png": {
+      "sha256": "725e28d74147771b9537932a26919b42cca76acf0b2a42582fcc60ae99dc8281",
+      "bytes": 343917,
+      "file": "1-watermarked.png",
+      "source": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/examples/1-watermarked.png"
+    },
+    "images/kingfisher-difference.png": {
+      "sha256": "12e36401c286af7419aebee57743c5edcc1609a5e66fa7b8de9b3949644d0181",
+      "bytes": 279767,
+      "file": "1-difference.png",
+      "source": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/examples/1-difference.png"
+    },
+    "images/ceramics-original.png": {
+      "sha256": "e0949a1e3cf560ed7f679f6b47184e8f61e445c89cf944e40d8e4273a6d66cdd",
+      "bytes": 298430,
+      "file": "2-original.png",
+      "source": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/examples/2-original.png"
+    },
+    "images/ceramics-watermarked.png": {
+      "sha256": "53c05dd53642a332a6b0e9977c36f626a056000320aa1585a496bb98c66c6d52",
+      "bytes": 307144,
+      "file": "2-watermarked.png",
+      "source": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/examples/2-watermarked.png"
+    },
+    "images/ceramics-difference.png": {
+      "sha256": "2888abab1a464395c9f3f84c7cb383572c64bef46f5a2c9632814a9497ebaf79",
+      "bytes": 259978,
+      "file": "2-difference.png",
+      "source": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/examples/2-difference.png"
+    },
+    "images/ceramics-signer-a.png": {
+      "sha256": "29b96f7fdf47610ab69800a567e33e009fd5f9548beea5f6b0242c9e7c907034",
+      "bytes": 307150,
+      "file": "2-collusion-signer_a.png",
+      "source": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/examples/2-collusion-signer_a.png"
+    },
+    "images/ceramics-signer-b.png": {
+      "sha256": "c75ffd5878f2b511f8a827fe485c455cfa44d9b0a4d54610ec4b70b3763399a3",
+      "bytes": 308441,
+      "file": "2-collusion-signer_b.png",
+      "source": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/examples/2-collusion-signer_b.png"
+    },
+    "images/ceramics-colluded.png": {
+      "sha256": "34ef6c00ffbc41afbcca6a091e88b0d2d763566bf3f3061d61b1ecad3a7e046d",
+      "bytes": 305073,
+      "file": "2-collusion-colluded.png",
+      "source": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/examples/2-collusion-colluded.png"
+    },
+    "images/observatory-strength.png": {
+      "file": "0-strength.png",
+      "sha256": "4fe4400613bad952e2b305a6aa693d0fc81ede1070974e361a4c8f0bd2a48a7d",
+      "bytes": 72811,
+      "source": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/perturbations/0-strength.png"
+    },
+    "images/observatory-modulation.png": {
+      "file": "0-layer-0.png",
+      "sha256": "8fa35cb125ac1a955f39a83cb60988032984188c459c8ea7f841a95ded43ae01",
+      "bytes": 1775600,
+      "source": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/perturbations/0-layer-0.png"
+    }
+  },
+  "attribution": {
+    "base_model": "Powered by Stability AI. SDXL-Turbo.",
+    "extractor": "Stable Signature, Meta Platforms, Inc. and affiliates; CC BY-NC 4.0. Converted extractor and architecture adapter; see upstream Space NOTICE.",
+    "notice": "https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/NOTICE"
+  }
+}

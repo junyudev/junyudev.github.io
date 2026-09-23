@@ -1,0 +1,323 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="An image provenance framework designed around the model provider's control, a third party's need for a shared interface, and the user's risk of error."><meta name="author" content="Jun Yu"><title>Stable Signer: Balancing Three Stakeholders’ Interests in Image Provenance | Jyu&#39;Log</title><link rel="canonical" href="https://junyu.blog/posts/stable-signer/"><link rel="alternate" hreflang="en" href="https://junyu.blog/posts/stable-signer/"><link rel="alternate" hreflang="zh-CN" href="https://junyu.blog/zh/posts/stable-signer/"><link rel="alternate" hreflang="x-default" href="https://junyu.blog/posts/stable-signer/"><link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="preload" href="/_astro/lora.BOCzjKQ9.woff2" as="font" type="font/woff2" crossorigin><link rel="alternate" type="application/rss+xml" title="Jyu'Log" href="/index.xml"><meta property="og:type" content="website"><meta property="og:title" content="Stable Signer: Balancing Three Stakeholders’ Interests in Image Provenance | Jyu'Log"><meta property="og:description" content="An image provenance framework designed around the model provider's control, a third party's need for a shared interface, and the user's risk of error."><meta property="og:url" content="https://junyu.blog/posts/stable-signer/"><link rel="stylesheet" href="/_astro/SiteLayout.rw4ebJmT.css"></head><body id="top"><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><div class="header-inner"><a class="site-name" href="/">Jyu'Log</a><nav aria-label="Main navigation"><a href="/">Home</a><a href="/projects/">Projects</a><a href="/research/">Research</a><a href="/writing/" aria-current="page">Writing</a></nav></div></header><main id="main" class="paper" tabindex="-1"><article class="prose"><header class="article-header"><h1>Stable Signer: Balancing Three Stakeholders’ Interests in Image Provenance</h1><p class="article-meta"><time datetime="2024-09-01T00:00:00.000Z">September 1, 2024</time><span aria-hidden="true"> · </span>Jun Yu</p></header><details class="toc"><summary>Contents</summary><nav aria-label="Table of contents"><ul><li><a href="#start-with-the-images-similar-pictures-different-messages">Start with the images: similar pictures, different messages</a></li><li><a href="#why-would-anyone-adopt-it">Why would anyone adopt it?</a></li><li><a href="#one-interface-with-different-things-kept-on-each-side">One interface, with different things kept on each side</a></li><li><a href="#how-a-message-changes-the-decoder">How a message changes the decoder</a></li><li class="subheading"><a href="#the-modulation-matrix-is-low-rank-the-final-weight-difference-need-not-be">The modulation matrix is low-rank; the final weight difference need not be</a></li><li class="subheading"><a href="#learn-a-message-to-modulation-function-instead-of-training-once-per-message">Learn a message-to-modulation function instead of training once per message</a></li><li><a href="#training-image-quality-is-a-constraint">Training: image quality is a constraint</a></li><li><a href="#what-happens-when-images-or-models-are-changed">What happens when images or models are changed?</a></li><li class="subheading"><a href="#image-level-attacks-cropping-brightness-and-a-composite-transform">Image-level attacks: cropping, brightness, and a composite transform</a></li><li class="subheading"><a href="#model-level-attack-average-two-users-models">Model-level attack: average two users’ models</a></li><li><a href="#how-much-did-the-parameters-move">How much did the parameters move?</a></li><li><a href="#from-reading-48-bits-to-naming-a-person">From reading 48 bits to naming a person</a></li><li><a href="#what-governance-would-this-still-need">What governance would this still need?</a></li><li><a href="#configuration-and-acknowledgments">Configuration and acknowledgments</a></li></ul></nav></details><p>If a generated image is cropped, color-graded, and reposted, can we still trace where it came from?</p>
+<p><strong>Stable Signer</strong> changes selected parameters of a generative model so that its output carries a recoverable user identifier. Different models can share an extractor, while each model provider retains control over how the watermark enters its own model.</p>
+<p>I designed the protocol around three questions: Would a model company adopt it? Can a third party trace images across models? And what quality, privacy, or false-accusation risks would users bear?</p>
+<p><a href="https://huggingface.co/spaces/Asphocarp/StableSigner">Try the demo</a> · <a href="https://github.com/junyudev/ceal">Source code</a></p>
+<h2 id="start-with-the-images-similar-pictures-different-messages">Start with the images: similar pictures, different messages</h2>
+<p>Each row below uses the same prompt and seed to produce one latent. We decode that latent with the original VAE decoder and with a message-conditioned decoder. The difference therefore comes from the decoder, not from two independent random generations.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Example</th><th>Original decoder</th><th>Watermarked decoder</th><th>Absolute pixel difference ×28</th></tr></thead><tbody><tr><td>Observatory</td><td><a href="/posts/stable-signer/images/observatory-original.png"><img src="/posts/stable-signer/images/observatory-original.png" alt="Observatory above a sea of clouds, original decoder"></a></td><td><a href="/posts/stable-signer/images/observatory-watermarked.png"><img src="/posts/stable-signer/images/observatory-watermarked.png" alt="Observatory, watermarked decoder, 46 of 48 bits recovered"></a></td><td><a href="/posts/stable-signer/images/observatory-difference.png"><img src="/posts/stable-signer/images/observatory-difference.png" alt="Pixelwise absolute difference for the observatory image, amplified 28 times"></a></td></tr><tr><td>Kingfisher</td><td><a href="/posts/stable-signer/images/kingfisher-original.png"><img src="/posts/stable-signer/images/kingfisher-original.png" alt="Kingfisher, original decoder"></a></td><td><a href="/posts/stable-signer/images/kingfisher-watermarked.png"><img src="/posts/stable-signer/images/kingfisher-watermarked.png" alt="Kingfisher, watermarked decoder, 48 of 48 bits recovered"></a></td><td><a href="/posts/stable-signer/images/kingfisher-difference.png"><img src="/posts/stable-signer/images/kingfisher-difference.png" alt="Pixelwise absolute difference for the kingfisher image, amplified 28 times"></a></td></tr><tr><td>Ceramics</td><td><a href="/posts/stable-signer/images/ceramics-original.png"><img src="/posts/stable-signer/images/ceramics-original.png" alt="Teapot and oranges, original decoder"></a></td><td><a href="/posts/stable-signer/images/ceramics-watermarked.png"><img src="/posts/stable-signer/images/ceramics-watermarked.png" alt="Teapot and oranges, watermarked decoder, 48 of 48 bits recovered"></a></td><td><a href="/posts/stable-signer/images/ceramics-difference.png"><img src="/posts/stable-signer/images/ceramics-difference.png" alt="Pixelwise absolute difference for the ceramics image, amplified 28 times"></a></td></tr></tbody></table>
+<p>The messages are 48 bits long. The three examples recover 46, 48, and 48 bits, respectively. To show <em>where</em> the pixels changed, the difference images multiply absolute differences by 28 and clip them to the display range. They do not depict the actual visible distortion at its true intensity.</p>
+<p>The demo lets you inspect these three precomputed examples, including image-level and model-level attacks, without waiting for inference. You can also enter your own prompt, seed, and message to generate an image live.</p>
+<h2 id="why-would-anyone-adopt-it">Why would anyone adopt it?</h2>
+<p>The obvious way to watermark an image is to run an embedder after generation. But someone who can run the generative model directly might skip that step. A model-level watermark moves the embedding mechanism into generation: images produced with the modified model parameters tend to carry the chosen message. Someone with access to the weights can still try to alter them. This changes the attack surface; it does not eliminate it.</p>
+<p><a href="https://pierrefdz.github.io/publications/stablesignature/">Stable Signature</a> demonstrated an instructive approach: fine-tune a latent diffusion model’s VAE decoder for a fixed message, then read that message from its images with a pretrained extractor. Our research reuses that extractor and asks two further questions. How can we assign different messages to different users without fine-tuning a decoder for each one? And how can different model providers participate in a common third-party provenance mechanism?</p>
+<p>Framing the task only as “improve bit accuracy” misses constraints that determine whether anyone would use the system.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Stakeholder</th><th>What they need</th><th>Design consequence</th></tr></thead><tbody><tr><td>Model provider</td><td>Keep its original weights and full architecture details private; avoid obvious quality loss; onboard users without retraining for each one</td><td>Keep model-specific parameter encoding on the provider side, make quality part of training, and condition a mapper on the message</td></tr><tr><td>Third-party provenance operator</td><td>Avoid maintaining a wholly different extraction procedure for every model</td><td>Share the extractor and message interface, but allow a separate mapper for each model</td></tr><tr><td>Ordinary user</td><td>Keep image quality and avoid being held responsible because of a statistical error</td><td>Separate extraction, matching, and identity claims; evaluate false positives and misattribution; define requirements for access, audits, and appeals</td></tr></tbody></table>
+<p>We call the third party a <em>regulator</em> in the research framework. It could be an independent organization; it need not be a government agency.</p>
+<p>For a model company to join, I think one choice matters especially: <strong>the provider should decide exactly how its model is modified.</strong></p>
+<p>Which layers are selected, how they are grouped, what low-rank factorization is used, and how long the mapper’s output vector must be are all model-specific decisions. The third party needs a protocol for training and using the mapper. It does not need direct possession of the complete model weights to carry out that protocol.</p>
+<p>This is what “shared” means here: a shared way to cooperate, not identical internals for every provider.</p>
+<h2 id="one-interface-with-different-things-kept-on-each-side">One interface, with different things kept on each side</h2>
+<p>The path from message to image and back is:</p>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>message m → model-specific mapper → compact vector ψ</span></span>
+<span class="line"><span>                                        ↓ provider's parameter decoding rule</span></span>
+<span class="line"><span>                                 message-conditioned model</span></span>
+<span class="line"><span>                                        ↓</span></span>
+<span class="line"><span>                                   output image y</span></span>
+<span class="line"><span>                                        ↓ shared extractor</span></span>
+<span class="line"><span>                                  recovered message m̂</span></span></code></pre>
+<p>The mapper and parameter decoding rule together can be viewed as a <a href="https://arxiv.org/abs/1609.09106">hypernetwork</a>. Given a message, they produce changes to another network’s parameters instead of overlaying the message onto an image.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Party</th><th>Role in the research framework</th></tr></thead><tbody><tr><td>Provider</td><td>Holds the original generative model; chooses the parameter encoding, layers, and rank; runs generation and model-side backpropagation</td></tr><tr><td>Third party</td><td>Holds the shared extractor; trains a mapper for each participating model; extracts messages and matches them against registered identifiers</td></tr><tr><td>Between them</td><td>Agree on vector dimensions and protocol; exchange the proxy, generated samples, and necessary gradients during joint training</td></tr></tbody></table>
+<p>A <strong>shared extractor is not a shared mapper</strong>. Each model still needs adaptation and training. Changing the selected layers, rank, or output dimension at deployment is not a harmless configuration edit: the mapper and the parameter decoding rule must remain compatible.</p>
+<p>On the provider side, parameter encoding selects weights, compresses them spatially, applies a low-rank factorization, flattens the result, and permutes it to obtain the exchanged vector. Decoding uses the agreed layers and shapes to construct parameter changes from that vector. Because selection and compression occur first, this is not a reversible encoding of arbitrary model weights.</p>
+<p>This is <strong>gray-box cooperation</strong>. The third party does not receive the original weights directly, but it still sees vector dimensions, training samples, and gradients. Reducing direct disclosure matters; it is not a proof that the third party can never infer model information. A permutation is not encryption.</p>
+<h2 id="how-a-message-changes-the-decoder">How a message changes the decoder</h2>
+<p>Let θ denote the original model parameters, m a message, and φ the mapper parameters. A simplified expression of the process is:</p>
+<span class="katex math-block" tabindex="0" role="group" aria-label="Equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.25em" columnalign="right left" columnspacing="0em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mi>ψ</mi></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><msub><mi>M</mi><mi>ϕ</mi></msub><mo stretchy="false">(</mo><mi>m</mi><mo stretchy="false">)</mo><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>θ</mi><mi>m</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><msub><mrow><mi mathvariant="normal">Decode</mi><mo>⁡</mo></mrow><mi>θ</mi></msub><mo stretchy="false">(</mo><mi>ψ</mi><mo stretchy="false">)</mo><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>y</mi><mi>m</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><msub><mi>G</mi><msub><mi>θ</mi><mi>m</mi></msub></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mover accent="true"><mi>m</mi><mo>^</mo></mover></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mn mathvariant="double-struck">1</mn><mo stretchy="false">[</mo><mi>E</mi><mo stretchy="false">(</mo><msub><mi>y</mi><mi>m</mi></msub><mo stretchy="false">)</mo><mo>></mo><mn>0</mn><mo stretchy="false">]</mo><mi mathvariant="normal">.</mi></mrow></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{aligned}
+\psi &#x26;= M_\phi(m), \\[2pt]
+\theta_m &#x26;= \operatorname{Decode}_{\theta}(\psi), \\[2pt]
+y_m &#x26;= G_{\theta_m}(x), \\[2pt]
+\hat m &#x26;= \mathbb{1}[E(y_m)>0].
+\end{aligned}
+</annotation></semantics></math></span>
+<p>The extractor E returns one score per bit. The final line thresholds those scores at zero. The θ subscript on <code>Decode</code> emphasizes its dependence on the original model held by the provider: ψ alone is not a copy of that model.</p>
+<p>In the current SDXL-Turbo path, text conditioning and denoising first produce a latent. The watermark modulates the VAE decoder that turns this latent into an RGB image. We do not retrain the text encoder or denoising network for each message.</p>
+<h3 id="the-modulation-matrix-is-low-rank-the-final-weight-difference-need-not-be">The modulation matrix is low-rank; the final weight difference need not be</h3>
+<p>For a selected convolutional layer, let W have shape <code>C_out × C_in × k × k</code>. We take two factors from the mapper’s output:</p>
+<span class="katex math-block" tabindex="0" role="group" aria-label="Equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.25em" columnalign="right left" columnspacing="0em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>A</mi><mi>m</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>∈</mo><msup><mi mathvariant="double-struck">R</mi><mrow><msub><mi>C</mi><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">t</mi></mrow></msub><mo>×</mo><mi>r</mi></mrow></msup><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>B</mi><mi>m</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>∈</mo><msup><mi mathvariant="double-struck">R</mi><mrow><mi>r</mi><mo>×</mo><msub><mi>C</mi><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi></mrow></msub></mrow></msup><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>S</mi><mi>m</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mi>α</mi><msub><mi>A</mi><mi>m</mi></msub><msub><mi>B</mi><mi>m</mi></msub><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><msub><mi>W</mi><mi>m</mi></msub><mo stretchy="false">[</mo><mi>o</mi><mo separator="true">,</mo><mi>i</mi><mo separator="true">,</mo><mi>u</mi><mo separator="true">,</mo><mi>v</mi><mo stretchy="false">]</mo></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mi>W</mi><mo stretchy="false">[</mo><mi>o</mi><mo separator="true">,</mo><mi>i</mi><mo separator="true">,</mo><mi>u</mi><mo separator="true">,</mo><mi>v</mi><mo stretchy="false">]</mo><mo fence="true" stretchy="true" minsize="1.2em" maxsize="1.2em">(</mo><mn>1</mn><mo>+</mo><msub><mi>S</mi><mi>m</mi></msub><mo stretchy="false">[</mo><mi>o</mi><mo separator="true">,</mo><mi>i</mi><mo stretchy="false">]</mo><mo fence="true" stretchy="true" minsize="1.2em" maxsize="1.2em">)</mo><mi mathvariant="normal">.</mi></mrow></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{aligned}
+A_m &#x26;\in \mathbb{R}^{C_{\rm out}\times r}, \\
+B_m &#x26;\in \mathbb{R}^{r\times C_{\rm in}}, \\
+S_m &#x26;= \alpha A_m B_m, \\
+W_m[o,i,u,v] &#x26;= W[o,i,u,v]\bigl(1+S_m[o,i]\bigr).
+\end{aligned}
+</annotation></semantics></math></span>
+<p>Each input-output channel pair shares one modulation coefficient across the convolution kernel’s spatial positions. Unselected layers and other parameters stay unchanged.</p>
+<p>This borrows the low-rank parameterization idea from <a href="https://arxiv.org/abs/2106.09685">LoRA</a>, but uses a multiplicative update, <code>W ⊙ (1 + αAB)</code>, rather than the usual additive update, <code>W + αAB</code>. The channel modulation matrix S has rank at most r. The actual weight difference, <code>ΔW = W ⊙ S</code>, generally does not.</p>
+<p>The parameter-count intuition is simple. A <code>512 × 512 × 3 × 3</code> convolution has 2,359,296 weights. With rank 8, the two factors contain only <code>512×8 + 8×512 = 8,192</code> numbers. The trade-off is restricted expressiveness: this modulation cannot represent an arbitrary weight change.</p>
+<p>The experiment below uses 48-bit <strong>0/1 input</strong>, a mapper with <strong>no hidden layer</strong>, and 15 modulated VAE decoder convolutions. The rank is 8 and α is 0.01. The mapper emits a 149,536-dimensional vector, some partitions of which are unused. The exact partitioning is recorded in the configuration linked at the end.</p>
+<h3 id="learn-a-message-to-modulation-function-instead-of-training-once-per-message">Learn a message-to-modulation function instead of training once per message</h3>
+<p>Optimizing a separate decoder for every new user’s message would make each new user a new training job. Instead, we train a function <code>M(m)</code> by repeatedly sampling messages, so it learns to produce useful modulations for messages it has not seen before.</p>
+<p>After training, a new 48-bit message only requires a mapper forward pass to construct its corresponding parameters. This saves <strong>repeated per-user training</strong>. It does not make all costs of adding users disappear: parameter construction, caching, model distribution, image generation, registration, and lookup still consume resources.</p>
+<h2 id="training-image-quality-is-a-constraint">Training: image quality is a constraint</h2>
+<p>The mapper has to satisfy two objectives: the extractor must recover the message, and the image should remain close to the original model’s output. We can express the research objective as:</p>
+<span class="katex math-block" tabindex="0" role="group" aria-label="Equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.25em" columnalign="right left" columnspacing="0em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><munder><mrow><mi>min</mi><mo>⁡</mo></mrow><mi>ϕ</mi></munder><mspace width="1em"></mspace></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><msub><mi mathvariant="double-struck">E</mi><mrow><mi>x</mi><mo separator="true">,</mo><mi>m</mi></mrow></msub><mo fence="true" stretchy="true" minsize="1.2em" maxsize="1.2em">[</mo><msub><mi mathvariant="script">L</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">g</mi></mrow></msub><mo stretchy="false">(</mo><mi>E</mi><mo stretchy="false">(</mo><msub><mi>y</mi><mi>m</mi></msub><mo stretchy="false">)</mo><mo separator="true">,</mo><mi>m</mi><mo stretchy="false">)</mo><mo fence="true" stretchy="true" minsize="1.2em" maxsize="1.2em">]</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mtext>subject to</mtext><mspace width="1em"></mspace></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><msub><mi mathvariant="double-struck">E</mi><mrow><mi>x</mi><mo separator="true">,</mo><mi>m</mi></mrow></msub><mo fence="true" stretchy="true" minsize="1.2em" maxsize="1.2em">[</mo><msub><mi mathvariant="script">L</mi><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">p</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">l</mi></mrow></msub><mo stretchy="false">(</mo><mi>y</mi><mo separator="true">,</mo><msub><mi>y</mi><mi>m</mi></msub><mo stretchy="false">)</mo><mo fence="true" stretchy="true" minsize="1.2em" maxsize="1.2em">]</mo><mo>≤</mo><mi>ε</mi><mi mathvariant="normal">.</mi></mrow></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{aligned}
+\min_\phi\quad &#x26;\mathbb{E}_{x,m}\bigl[
+  \mathcal{L}_{\rm msg}(E(y_m),m)\bigr] \\
+\text{subject to}\quad &#x26;\mathbb{E}_{x,m}\bigl[
+  \mathcal{L}_{\rm perceptual}(y,y_m)\bigr]\leq\varepsilon.
+\end{aligned}
+</annotation></semantics></math></span>
+<p>Training uses BCE for message recovery and Watson-VGG perceptual loss for image change. “How much quality loss can we accept?” is easier for a provider to reason about than the mixing weight between two losses. We therefore express the quality budget directly as a constraint ε.</p>
+<p>Joint training proceeds as follows:</p>
+<ol>
+<li>The third party samples a message, runs the mapper, and sends ψ to the provider.</li>
+<li>The provider applies its parameter decoding rule, generates original and watermarked images from the same input, and computes perceptual loss.</li>
+<li>If quality exceeds the budget, the provider returns a quality gradient with respect to ψ. The third party uses it to correct the mapper, with a cap on correction iterations.</li>
+<li>The provider sends the watermarked image. The third party evaluates message loss with the extractor it keeps on its side, then returns the image gradient.</li>
+<li>The provider backpropagates that gradient to ψ; the third party backpropagates from ψ to the mapper parameters.</li>
+</ol>
+<p>The chain rule gives each side a computational and information boundary: the provider need not hold the extractor weights, and the third party need not hold the generative model weights. The arrangement also introduces sample and gradient transfer, synchronization between parties, and possible information leakage through the training interface.</p>
+<p>The constraint applies to expected loss under the training samples, and quality correction has a finite iteration limit. It cannot guarantee the same quality budget for every new prompt and message.</p>
+<h2 id="what-happens-when-images-or-models-are-changed">What happens when images or models are changed?</h2>
+<p>We tested image transformations and parameter averaging on three fixed prompt, seed, and message combinations. For each combination, we used the first generated result, with no selection for recovery accuracy.</p>
+<h3 id="image-level-attacks-cropping-brightness-and-a-composite-transform">Image-level attacks: cropping, brightness, and a composite transform</h3>
+<p>Extraction runs on the final displayed <strong>RGB8 image</strong>, not on a floating-point tensor before saving. We apply ImageNet normalization and threshold the extractor’s output at zero for each bit. The attacks operate on those same displayed pixels.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Example</th><th align="right">No attack</th><th align="right">Center crop</th><th align="right">Brightness ×1.5</th><th align="right">Composite transform</th></tr></thead><tbody><tr><td>Observatory, seed 23</td><td align="right">46/48</td><td align="right">47/48</td><td align="right">47/48</td><td align="right">33/48</td></tr><tr><td>Kingfisher, seed 41</td><td align="right">48/48</td><td align="right">48/48</td><td align="right">48/48</td><td align="right">37/48</td></tr><tr><td>Ceramics, seed 67</td><td align="right">48/48</td><td align="right">48/48</td><td align="right">48/48</td><td align="right">36/48</td></tr></tbody></table>
+<p>The center crop in this table retains about 90% of both the width and height, then resizes to 512×512 with Lanczos. It does <strong>not</strong> retain only 10% of the image. The composite transform retains the central 50% of each dimension, resizes to the original dimensions, multiplies brightness by 1.5, and JPEG-encodes with quality parameter 80. Keeping half the width and height retains only about a quarter of the area.</p>
+<p>The mild transforms did not visibly damage recovery in these three examples, but the composite transform reduced recovery to 33–37 bits. The observatory recovered one <em>more</em> bit after a mild transform. A single sample’s thresholded result need not vary monotonically with attack strength; this does not show that cropping generally improves the watermark.</p>
+<p>Three examples are not enough to estimate overall robustness.</p>
+<h3 id="model-level-attack-average-two-users-models">Model-level attack: average two users’ models</h3>
+<p>If users receive watermarked model weights rather than only a generation API, image processing is not their only attack surface. Two users can cooperate to average their model parameters and try to dilute their identifiers.</p>
+<p>The demo shows one fixed 50/50 average. For two signers sharing the same base W:</p>
+<span class="katex math-block" tabindex="0" role="group" aria-label="Equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.25em" columnalign="right left" columnspacing="0em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>W</mi><mi>a</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mi>W</mi><mo>⊙</mo><mo stretchy="false">(</mo><mn>1</mn><mo>+</mo><mi>α</mi><msub><mi>A</mi><mi>a</mi></msub><msub><mi>B</mi><mi>a</mi></msub><mo stretchy="false">)</mo><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><msub><mi>W</mi><mi>b</mi></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mi>W</mi><mo>⊙</mo><mo stretchy="false">(</mo><mn>1</mn><mo>+</mo><mi>α</mi><msub><mi>A</mi><mi>b</mi></msub><msub><mi>B</mi><mi>b</mi></msub><mo stretchy="false">)</mo><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mfrac><mrow><msub><mi>W</mi><mi>a</mi></msub><mo>+</mo><msub><mi>W</mi><mi>b</mi></msub></mrow><mn>2</mn></mfrac></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mo>=</mo><mi>W</mi><mo>⊙</mo><mrow><mo fence="true">(</mo><mn>1</mn><mo>+</mo><mfrac><mi>α</mi><mn>2</mn></mfrac><mo stretchy="false">(</mo><msub><mi>A</mi><mi>a</mi></msub><msub><mi>B</mi><mi>a</mi></msub><mo>+</mo><msub><mi>A</mi><mi>b</mi></msub><msub><mi>B</mi><mi>b</mi></msub><mo stretchy="false">)</mo><mo fence="true">)</mo></mrow><mi mathvariant="normal">.</mi></mrow></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{aligned}
+W_a &#x26;= W\odot(1+\alpha A_aB_a), \\
+W_b &#x26;= W\odot(1+\alpha A_bB_b), \\
+\frac{W_a+W_b}{2}
+  &#x26;= W\odot\left(1+\frac{\alpha}{2}
+      (A_aB_a+A_bB_b)\right).
+\end{aligned}
+</annotation></semantics></math></span>
+<p>We average the <strong>complete parameter modulations</strong>, not A and B separately before multiplying them, and not two output images. The colluded model still performs a real decode of the same latent.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Signer A</th><th>Signer B</th><th>Averaged model</th></tr></thead><tbody><tr><td><a href="/posts/stable-signer/images/ceramics-signer-a.png"><img src="/posts/stable-signer/images/ceramics-signer-a.png" alt="Ceramics generated by signer A&#x27;s model"></a></td><td><a href="/posts/stable-signer/images/ceramics-signer-b.png"><img src="/posts/stable-signer/images/ceramics-signer-b.png" alt="Ceramics generated by signer B&#x27;s model"></a></td><td><a href="/posts/stable-signer/images/ceramics-colluded.png"><img src="/posts/stable-signer/images/ceramics-colluded.png" alt="Ceramics generated by the 50/50 parameter-averaged model"></a></td></tr></tbody></table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Example</th><th align="right">Averaged output matching A’s message</th><th align="right">Matching B’s message</th></tr></thead><tbody><tr><td>Observatory</td><td align="right">33/48</td><td align="right">39/48</td></tr><tr><td>Kingfisher</td><td align="right">34/48</td><td align="right">38/48</td></tr><tr><td>Ceramics</td><td align="right">20/48</td><td align="right">28/48</td></tr></tbody></table>
+<p>For ceramics, matches fell to 20/48 and 28/48. Those two messages happen to be bitwise complements, so any extracted 48-bit string must have match counts summing to 48. The equation <code>20 + 28 = 48</code> is not, by itself, independent evidence about attack performance.</p>
+<p>These results show why model-level threats need their own evaluation. They do not prove reliable identification of colluders, nor do they prove that every watermark was removed. Either claim needs a decision rule and more tests.</p>
+<h2 id="how-much-did-the-parameters-move">How much did the parameters move?</h2>
+<p>To see what averaging changed, we can inspect the layerwise modulations produced for two messages. Both plots below use the same mapper and VAE as the image experiments.</p>
+<p>First, the relative perturbation strength of each layer:</p>
+<span class="katex math-block" tabindex="0" role="group" aria-label="Equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>q</mi><mi mathvariant="normal">ℓ</mi></msub><mo>=</mo><mfrac><mrow><mo stretchy="false">∥</mo><msub><mi>W</mi><mrow><mi mathvariant="normal">ℓ</mi><mo separator="true">,</mo><mi>m</mi></mrow></msub><mo>−</mo><msub><mi>W</mi><mi mathvariant="normal">ℓ</mi></msub><msub><mo stretchy="false">∥</mo><mi>F</mi></msub></mrow><mrow><mo stretchy="false">∥</mo><msub><mi>W</mi><mi mathvariant="normal">ℓ</mi></msub><msub><mo stretchy="false">∥</mo><mi>F</mi></msub></mrow></mfrac><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">q_\ell =
+\frac{\lVert W_{\ell,m}-W_\ell\rVert_F}
+     {\lVert W_\ell\rVert_F}.
+</annotation></semantics></math></span>
+<p><a href="/posts/stable-signer/images/observatory-strength.png"><img src="/posts/stable-signer/images/observatory-strength.png" alt="Relative weight perturbation across 15 observatory decoder layers for signers A, B, and their 50/50 average"></a></p>
+<p>We use the FP32 weight differences actually executed by the model, with FP64 accumulation for the norms, and divide by the norm of the full convolution weight tensor. Across layers for signer A in the observatory example, the result ranges from roughly 6% to 42%. α = 0.01 therefore does <strong>not</strong> mean “each parameter changes by only 1%.” It multiplies a learned matrix product. Nor can parameter-change magnitude be converted directly into visible image distortion.</p>
+<p>The second plot is a heatmap of the channel modulation matrix S. It shows A, B, and their average for <code>up_blocks.1.resnets.0.conv1</code>:</p>
+<p><a href="/posts/stable-signer/images/observatory-modulation.png"><img src="/posts/stable-signer/images/observatory-modulation.png" alt="Channel modulation heatmaps for signers A, B, and their average, sharing a symmetric-logarithmic color scale"></a></p>
+<p>Each cell is a modulation coefficient for an output-input channel pair. It is <strong>not an image pixel, an original weight, or an absolute weight difference ΔW</strong>. The three panels share a symmetric-logarithmic color scale centered at zero, linear within ±1%, with no clipping of larger values. This makes both small changes and a few large modulations visible.</p>
+<p>The plots help locate which layers move most and where different messages produce similar modulations. They are not a semantic explanation of model features: a red cell does not correspond to an object in the image. Establishing whether a layer is necessary for message recovery would require controlled ablations that disable, replace, or perturb that layer.</p>
+<h2 id="from-reading-48-bits-to-naming-a-person">From reading 48 bits to naming a person</h2>
+<p>The most tempting mistake is to read <code>46/48</code> as “a 95.8% probability that this image came from this person.” It only says that 46 of the 48 extracted bit positions match one specified message.</p>
+<p>At least three different questions are involved:</p>
+<ul>
+<li><strong>Message recovery:</strong> How many bits match a specified message? The bit match counts above answer this.</li>
+<li><strong>Watermark detection:</strong> Is the match unusual enough to reject the hypothesis that this image has no corresponding watermark? That needs a threshold and unmarked controls.</li>
+<li><strong>Attribution to a user:</strong> Among many registered messages, is there a sufficiently reliable and unambiguous match? This additionally depends on multiple comparisons, candidate conflicts, and the integrity of the registry.</li>
+</ul>
+<p>For example, under an idealized null hypothesis where extracted bits from an unmarked image are independent and each is equally likely to be 0 or 1, the match count K against a fixed message follows <code>Binomial(48, 1/2)</code>. With a decision threshold of at least t matching bits:</p>
+<span class="katex math-block" tabindex="0" role="group" aria-label="Equation"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>Pr</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>K</mi><mo>≥</mo><mi>t</mi><mo>∣</mo><msub><mi>H</mi><mn>0</mn></msub><mo stretchy="false">)</mo><mo>=</mo><msup><mn>2</mn><mrow><mo>−</mo><mn>48</mn></mrow></msup><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mi>t</mi></mrow><mn>48</mn></munderover><mrow><mo fence="true">(</mo><mfrac linethickness="0px"><mn>48</mn><mi>j</mi></mfrac><mo fence="true">)</mo></mrow><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">\Pr(K\geq t\mid H_0)
+  = 2^{-48}\sum_{j=t}^{48}\binom{48}{j}.
+</annotation></semantics></math></span>
+<p>If we compare against N registered messages, a union bound gives an upper bound of <code>N · Pr(K ≥ t | H₀)</code> on the overall false-positive probability, capped at 1. The bound does not require independence <em>between</em> comparisons, but the single-comparison formula relies on the bit-distribution assumption above. A real system would have to calibrate against unmarked images, outputs from other models, and its actual message codebook. Three examples and this idealized formula do not establish a measured false-positive rate. The <a href="https://pierrefdz.github.io/publications/stablesignature/">Stable Signature project page</a> also distinguishes detection, identification, and different kinds of error.</p>
+<p>Thus, a 48-bit format is not proof that <code>2^48</code> users can be distinguished reliably. Extracting a message does not verify that the content is authentic, much less prove that a particular person did something. “Signer” here names a statistical watermarking mechanism, not a public-key digital signature.</p>
+<h2 id="what-governance-would-this-still-need">What governance would this still need?</h2>
+<p>A common extractor reduces fragmentation in technical integration. It also concentrates power in the third party, a problem that higher recovery accuracy alone cannot solve.</p>
+<p>The research threat model assumes a cooperating provider, keeps the extractor with the third party, and denies attackers access to a provenance query interface. It does not solve the case of a malicious provider deliberately turning off the watermark. For inspectability, the public demo exposes relevant code and extraction results. It cannot serve as a security proof under the original “secret extractor, no query access” assumptions.</p>
+<p>For users, unresolved questions include: Who may query an identifier? Who may link it to an identity, and under what conditions? How can an error be appealed? Can registry entries be changed after the fact? Who audits the third party? A more plausible deployment would separate random identifiers from the identity mapping and authorize and log queries. These are <strong>requirements for a future system, not features implemented by the current demo</strong>.</p>
+<p>I worry most about the concentration of provenance authority behind a common interface. How could the third party prove it followed the agreed rules? We have no cryptographic or algorithmic guarantee for that today. Calling the operator “trusted” does not answer the question.</p>
+<h2 id="configuration-and-acknowledgments">Configuration and acknowledgments</h2>
+<p>The image results come from GPU inference with the trained 08R checkpoint. The parameter plots were computed offline on a CPU. The online demo runs inference centrally; it does not deploy the two parties in isolation or implement the confidentiality protocol.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Item</th><th>Version or protocol used here</th></tr></thead><tbody><tr><td>Base model</td><td>SDXL-Turbo, revision <code>71153311d3dbb46851df1931d3ca6e939de83304</code></td></tr><tr><td>Generation</td><td>FP32, 512×512, 4 steps, guidance scale 0</td></tr><tr><td>Mapper</td><td>Historical 08R artifact; binary input; rank 8; 15 active convolutional layers</td></tr><tr><td>Extraction</td><td>Displayed RGB8 pixels, ImageNet normalization, zero threshold for each bit</td></tr><tr><td>Example selection</td><td>Three fixed prompt/seed/message combinations, first result, no recovery-based filtering</td></tr><tr><td>Result index</td><td><a href="/posts/stable-signer/evidence.json">Accompanying manifest</a> with image hashes, messages, results, and upstream record locations</td></tr></tbody></table>
+<p>The full records are the <a href="https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/examples/manifest.json">image results manifest</a>, <a href="https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/perturbations/manifest.json">parameter diagnostics manifest</a>, and <a href="https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/artifact-manifest.json">runtime artifact manifest</a>. They record code revisions, configurations, and file hashes for the respective runs.</p>
+<p>This research was conducted at Zhejiang University and has not yet been published. I primarily worked on framework and algorithm design, implementation, experiments and ablations, visualizations, and paper writing as a co-first author. I thank my adviser and collaborators.</p>
+<p><strong>Prior work.</strong> The extractor reuses pretrained weights released by <a href="https://github.com/facebookresearch/stable_signature">Stable Signature</a>; its 48-bit architecture follows the HiDDeN line of work. The low-rank parameterization and conditional parameter generation draw on <a href="https://arxiv.org/abs/2106.09685">LoRA</a> and <a href="https://arxiv.org/abs/1609.09106">HyperNetworks</a>, respectively. The base generative model is provided by Stability AI, and the runtime uses Hugging Face Diffusers.</p>
+<p><strong>Use and licenses.</strong> The online demo is for non-commercial research only. Powered by Stability AI. This Stability AI Model is licensed under the Stability AI Community License, Copyright © Stability AI Ltd. All Rights Reserved. The adapted extractor code and converted weights are subject to CC BY-NC 4.0. See the <a href="https://huggingface.co/spaces/Asphocarp/StableSigner/blob/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/NOTICE">NOTICE</a> and <a href="https://huggingface.co/spaces/Asphocarp/StableSigner/tree/382da26bef8938c6d309e57ee0ebab1bb94b0e5a/licenses">licenses</a> for modifications and full terms.</p></article></main><footer class="site-footer"><span>© 2026 <a href="/">Jun Yu</a></span><div class="footer-actions"><a class="footer-language" href="/zh/posts/stable-signer/" hreflang="zh-CN" aria-label="Switch to Chinese">EN</a><a href="/index.xml">RSS</a></div></footer></body></html>
