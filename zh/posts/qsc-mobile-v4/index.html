@@ -1,0 +1,165 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="学生打开校园 App 只为查一件事，查完就走。v4 把它做成一块校园负一屏：首页是一叠学生自己挑选、自己排列的小组件，最常用的还能直接放到手机桌面上。"><meta name="author" content="Jun Yu"><title>校园负一屏：重新设计求是潮 Mobile | Jyu&#39;Log</title><link rel="canonical" href="https://junyu.blog/zh/posts/qsc-mobile-v4/"><link rel="alternate" hreflang="zh-CN" href="https://junyu.blog/zh/posts/qsc-mobile-v4/"><link rel="alternate" hreflang="en" href="https://junyu.blog/posts/qsc-mobile-v4/"><link rel="alternate" hreflang="x-default" href="https://junyu.blog/posts/qsc-mobile-v4/"><link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="preload" href="/_astro/lora.BOCzjKQ9.woff2" as="font" type="font/woff2" crossorigin><link rel="alternate" type="application/rss+xml" title="Jyu'Log" href="/zh/index.xml"><meta property="og:type" content="website"><meta property="og:title" content="校园负一屏：重新设计求是潮 Mobile | Jyu'Log"><meta property="og:description" content="学生打开校园 App 只为查一件事，查完就走。v4 把它做成一块校园负一屏：首页是一叠学生自己挑选、自己排列的小组件，最常用的还能直接放到手机桌面上。"><meta property="og:url" content="https://junyu.blog/zh/posts/qsc-mobile-v4/"><link rel="stylesheet" href="/_astro/SiteLayout.DoBKsh94.css"><link rel="stylesheet" href="/_astro/TechNote.DYwjxPtL.css"></head><body id="top"><a class="skip-link" href="#main">跳到正文</a><header class="site-header"><div class="header-inner"><a class="site-name" href="/zh/">Jyu'Log</a><nav aria-label="主导航"><a href="/zh/">首页</a><a href="/zh/projects/">项目</a><a href="/zh/research/">研究</a><a href="/zh/writing/" aria-current="page">写作</a></nav></div></header><main id="main" class="paper" tabindex="-1"><article class="prose"><header class="article-header"><h1>校园负一屏：重新设计求是潮 Mobile</h1><p class="article-meta"><time datetime="2023-03-16T00:00:00.000Z">2023年3月16日</time><span aria-hidden="true"> · </span>Jun Yu</p></header><details class="toc"><summary>目录</summary><nav aria-label="文章目录"><ul><li><a href="#1-学生在用它做什么">1. 学生在用它做什么</a></li><li><a href="#2-设计理念校园负一屏">2. 设计理念：校园负一屏</a></li><li><a href="#3-倒计时一眼读完">3. 倒计时：一眼读完</a></li><li><a href="#4-尺寸面积决定说多少">4. 尺寸：面积决定说多少</a></li><li><a href="#5-首页一叠小组件">5. 首页：一叠小组件</a></li><li><a href="#6-日程贴着真实的一天">6. 日程：贴着真实的一天</a></li><li><a href="#7-工具盒低频功能的去处">7. 工具盒：低频功能的去处</a></li><li><a href="#8-数据要对得起信任">8. 数据要对得起信任</a></li><li><a href="#9-mvp先做第一层">9. MVP：先做第一层</a></li></ul></nav></details><p>求是潮 Mobile 是浙江大学学生自己做的校园 App。v3 的数据说明，学生打开它只为查一件事，查完就走。</p>
+<p>这种用法，手机系统早有现成的形态：负一屏。在桌面上往右一滑，一屏小组件摆在那里，日程、天气、快递各占一块，每块只回答一个问题，不用点进任何地方。v4 的设计理念就是做一块<strong>校园负一屏</strong>：首页不再是一排功能入口，而是一叠学生自己挑选、自己排列的小组件；最常用的几个，还能直接放到手机桌面和系统负一屏上。</p>
+<figure class="qsc"><div class="stage" aria-label="桌面小组件"><div class="stage-clock"><span data-qsc-live="clock">9:22</span></div><div class="hz-a" data-qsc-w="count"><div class="wg wg-count"><div class="ring"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="bg" cx="50" cy="50" r="46" stroke-width="8"/><circle cx="50" cy="50" r="46" stroke="#f1805f" stroke-width="8" stroke-dasharray="37.11709046725456 289.02652413026095" stroke-dashoffset="-251.90943366300638"/></svg><div class="ring-c"><i>距下课</i><b>12:12</b><span>微积分(甲) II</span></div></div><div class="place">紫金港东2-103(录播)</div><div class="dots"><u></u><u></u><u></u><u></u></div></div></div><div class="hz-b" data-qsc-w="wide"><div class="wg wg-wide"><div><div class="lab">距下课</div><div class="big n">00:12:12</div><div class="nm">微积分(甲) II</div><div class="sub">紫金港东2-103(录播)</div><div class="sub n">08:00-09:35</div></div><div class="list"><div class="chip" style="--c:#43c4d7"><b>参观行为艺术展</b><span>紫金港小剧场 B217</span><span class="n">11:30-14:30</span></div><div class="chip" style="--c:#f2a23a"><b>军体王八拳</b><span>紫金港风雨操场</span><span class="n">15:00-16:15</span></div><div class="chip more">还有 1 项</div></div></div></div></div></figure><script type="module" src="/_astro/LiveStage.astro_astro_type_script_index_0_lang.BYQUtvBD.js"></script>
+<h2 id="1-学生在用它做什么">1. 学生在用它做什么</h2>
+<div class="qsc"><div class="stats"><div class="stat"><div class="v">12,800</div><div class="k">日均活跃用户</div><div class="d">Android 约 8,100，iOS 约 4,700。</div></div><div class="stat"><div class="v">4–5<small>次</small></div><div class="k">人均每日启动</div><div class="d">Android 3.8 次，iOS 5.0 次。</div></div><div class="stat"><div class="v">≈ 30<small>秒</small></div><div class="k">单次使用时长</div><div class="d">iOS 约 26 秒，Android 约 42 秒。</div></div></div></div>
+<figure class="qsc" data-locale="zh"><div class="chart-card"><div class="chart-title">求是潮 Mobile v3 每日活跃用户</div><div class="chart-sub">2020 年 9 月 – 2021 年 3 月，按平台</div><div class="legend"><span><i style="background:var(--q-android)"></i>Android</span><span><i style="background:var(--q-ios)"></i>iOS</span></div><div class="chart-wrap"><svg class="chart" viewBox="0 0 1000 380" role="img" aria-label="v3 每日活跃用户折线图。曲线跟随校历：开学周最高，国庆和春节最低。"><line x1="44" x2="936" y1="350" y2="350" stroke="var(--q-rule)" stroke-width="1"></line><text x="36" y="354" text-anchor="end">0</text><line x1="44" x2="936" y1="255" y2="255" stroke="var(--q-rule)" stroke-width="1"></line><text x="36" y="259" text-anchor="end">5k</text><line x1="44" x2="936" y1="160" y2="160" stroke="var(--q-rule)" stroke-width="1"></line><text x="36" y="164" text-anchor="end">10k</text><line x1="44" x2="936" y1="65" y2="65" stroke="var(--q-rule)" stroke-width="1"></line><text x="36" y="69" text-anchor="end">15k</text><text x="44" y="372">9 月</text><text x="184.10471204188482" y="372">10 月</text><text x="328.87958115183244" y="372">11 月</text><text x="468.9842931937173" y="372">12 月</text><text x="613.7591623036649" y="372">1 月</text><text x="758.5340314136125" y="372">2 月</text><text x="889.2984293193717" y="372">3 月</text><line x1="104.71204188481676" x2="104.71204188481676" y1="34" y2="350" stroke="var(--q-rule)" stroke-dasharray="2 3"></line><text class="ann" x="104.71204188481676" y="26" text-anchor="middle">秋学期开学</text><line x1="198.1151832460733" x2="198.1151832460733" y1="34" y2="350" stroke="var(--q-rule)" stroke-dasharray="2 3"></line><text class="ann" x="198.1151832460733" y="26" text-anchor="middle">国庆</text><line x1="721.17277486911" x2="721.17277486911" y1="34" y2="350" stroke="var(--q-rule)" stroke-dasharray="2 3"></line><text class="ann" x="721.17277486911" y="26" text-anchor="middle">期末</text><line x1="809.9057591623036" x2="809.9057591623036" y1="34" y2="350" stroke="var(--q-rule)" stroke-dasharray="2 3"></line><text class="ann" x="809.9057591623036" y="26" text-anchor="middle">春节</text><line x1="889.2984293193717" x2="889.2984293193717" y1="34" y2="350" stroke="var(--q-rule)" stroke-dasharray="2 3"></line><text class="ann" x="889.2984293193717" y="26" text-anchor="end">春学期开学</text><path d="M44.0,208.9L48.7,191.5L53.3,196.7L58.0,201.2L62.7,211.2L67.4,221.4L72.0,161.1L76.7,158.0L81.4,172.6L86.0,156.2L90.7,159.9L95.4,139.8L100.0,100.2L104.7,97.5L109.4,122.5L114.1,124.8L118.7,145.2L123.4,173.6L128.1,221.7L132.7,201.4L137.4,161.0L142.1,172.6L146.7,185.7L151.4,193.7L156.1,214.9L160.8,234.3L165.4,205.2L170.1,207.6L174.8,216.0L179.4,237.7L184.1,296.9L188.8,304.9L193.4,307.8L198.1,303.2L202.8,295.4L207.5,285.9L212.1,275.1L216.8,253.5L221.5,225.5L226.1,225.3L230.8,269.9L235.5,225.4L240.1,232.1L244.8,238.5L249.5,245.3L254.2,147.4L258.8,193.3L263.5,234.7L268.2,189.6L272.8,208.9L277.5,219.2L282.2,199.3L286.8,213.8L291.5,258.7L296.2,244.1L300.9,192.5L305.5,195.6L310.2,196.2L314.9,200.3L319.5,218.1L324.2,265.5L328.9,239.6L333.5,178.2L338.2,179.5L342.9,182.2L347.6,174.4L352.2,197.4L356.9,227.9L361.6,191.9L366.2,158.9L370.9,179.9L375.6,165.8L380.3,170.7L384.9,204.2L389.6,191.4L394.3,204.1L398.9,164.5L403.6,189.9L408.3,187.9L412.9,202.8L417.6,189.4L422.3,205.8L427.0,158.6L431.6,103.8L436.3,111.8L441.0,113.3L445.6,126.7L450.3,166.0L455.0,200.6L459.6,191.3L464.3,142.2L469.0,156.2L473.7,153.4L478.3,174.9L483.0,209.7L487.7,256.8L492.3,235.3L497.0,174.5L501.7,184.5L506.3,179.4L511.0,193.4L515.7,228.3L520.4,269.3L525.0,242.0L529.7,195.0L534.4,197.6L539.0,196.8L543.7,208.9L548.4,242.2L553.0,264.9L557.7,249.2L562.4,198.0L567.1,202.2L571.7,166.2L576.4,188.4L581.1,180.1L585.7,239.7L590.4,220.7L595.1,169.8L599.7,176.8L604.4,130.9L609.1,238.8L613.8,260.6L618.4,255.3L623.1,227.8L627.8,146.3L632.4,163.0L637.1,174.5L641.8,179.7L646.5,197.0L651.1,229.0L655.8,206.6L660.5,151.5L665.1,161.8L669.8,159.6L674.5,166.8L679.1,169.8L683.8,153.7L688.5,176.9L693.2,142.8L697.8,142.2L702.5,114.4L707.2,118.5L711.8,129.1L716.5,126.7L721.2,90.0L725.8,104.1L730.5,102.5L735.2,101.4L739.9,106.2L744.5,113.9L749.2,120.4L753.9,131.7L758.5,134.9L763.2,148.3L767.9,163.0L772.5,185.5L777.2,205.1L781.9,227.8L786.6,238.2L791.2,260.7L795.9,270.4L800.6,278.7L805.2,288.6L809.9,296.0L814.6,301.1L819.2,302.9L823.9,305.2L828.6,303.7L833.3,302.8L837.9,297.1L842.6,293.4L847.3,297.3L851.9,291.3L856.6,279.1L861.3,279.5L865.9,276.9L870.6,248.4L875.3,206.8L880.0,184.3L884.6,92.9L889.3,68.3L894.0,80.1L898.6,88.4L903.3,98.9L908.0,143.9L912.6,235.5L917.3,192.8L922.0,119.3L926.7,111.6L931.3,118.3L936.0,135.4" fill="none" stroke="var(--q-android)" stroke-width="2" stroke-linejoin="round"></path><path d="M44.0,283.0L48.7,272.4L53.3,270.1L58.0,267.6L62.7,271.3L67.4,272.3L72.0,254.5L76.7,253.8L81.4,253.0L86.0,240.5L90.7,241.3L95.4,228.7L100.0,204.4L104.7,185.0L109.4,195.4L114.1,198.2L118.7,204.0L123.4,225.0L128.1,240.2L132.7,237.8L137.4,205.2L142.1,210.5L146.7,218.7L151.4,225.1L156.1,242.8L160.8,253.5L165.4,227.5L170.1,229.9L174.8,234.0L179.4,251.8L184.1,304.9L188.8,311.2L193.4,311.1L198.1,307.3L202.8,297.9L207.5,290.3L212.1,279.8L216.8,257.2L221.5,235.2L226.1,235.4L230.8,270.9L235.5,234.8L240.1,239.6L244.8,243.6L249.5,252.1L254.2,268.9L258.8,291.4L263.5,285.7L268.2,245.7L272.8,248.8L277.5,252.4L282.2,256.8L286.8,289.9L291.5,298.0L296.2,289.2L300.9,252.5L305.5,251.8L310.2,255.0L314.9,259.5L319.5,273.4L324.2,301.1L328.9,287.7L333.5,247.6L338.2,247.9L342.9,250.1L347.6,248.4L352.2,264.4L356.9,282.8L361.6,260.8L366.2,237.3L370.9,251.0L375.6,245.4L380.3,248.7L384.9,271.1L389.6,277.2L394.3,276.0L398.9,256.5L403.6,266.6L408.3,268.2L412.9,268.2L417.6,263.2L422.3,273.5L427.0,241.7L431.6,209.4L436.3,214.9L441.0,216.1L445.6,225.5L450.3,250.9L455.0,269.9L459.6,267.8L464.3,237.8L469.0,242.0L473.7,242.8L478.3,256.0L483.0,276.8L487.7,300.0L492.3,289.0L497.0,255.4L501.7,259.8L506.3,261.2L511.0,270.0L515.7,286.6L520.4,307.4L525.0,298.1L529.7,268.2L534.4,268.1L539.0,264.5L543.7,272.5L548.4,292.2L553.0,303.7L557.7,297.6L562.4,269.6L567.1,267.9L571.7,254.3L576.4,266.7L581.1,260.6L585.7,291.9L590.4,282.9L595.1,257.6L599.7,262.2L604.4,240.6L609.1,295.8L613.8,304.5L618.4,299.7L623.1,286.6L627.8,243.8L632.4,250.9L637.1,259.0L641.8,260.7L646.5,272.7L651.1,290.6L655.8,279.5L660.5,246.4L665.1,250.9L669.8,249.5L674.5,257.6L679.1,260.9L683.8,259.4L688.5,262.0L693.2,244.5L697.8,245.7L702.5,233.9L707.2,235.4L711.8,240.2L716.5,239.3L721.2,216.0L725.8,223.3L730.5,221.4L735.2,222.0L739.9,224.5L744.5,229.4L749.2,232.3L753.9,237.1L758.5,236.5L763.2,245.9L767.9,250.2L772.5,263.4L777.2,272.0L781.9,282.0L786.6,288.9L791.2,297.6L795.9,304.3L800.6,308.9L805.2,317.0L809.9,320.4L814.6,320.4L819.2,321.8L823.9,320.4L828.6,320.6L833.3,318.9L837.9,316.4L842.6,312.4L847.3,316.2L851.9,313.9L856.6,304.9L861.3,306.7L865.9,307.3L870.6,289.9L875.3,268.6L880.0,263.6L884.6,215.2L889.3,187.9L894.0,198.6L898.6,206.7L903.3,215.9L908.0,245.6L912.6,287.6L917.3,268.5L922.0,228.8L926.7,224.8L931.3,229.8L936.0,244.9" fill="none" stroke="var(--q-ios)" stroke-width="2" stroke-linejoin="round"></path><text class="end" x="944" y="139.414">Android</text><text class="end" x="944" y="248.92999999999998">iOS</text><g class="cross" style="display:none"><line y1="34" y2="350" stroke="var(--q-faint)" stroke-width="1"></line><circle r="4.5" fill="var(--q-android)" stroke="#fff" stroke-width="2"></circle><circle r="4.5" fill="var(--q-ios)" stroke="#fff" stroke-width="2"></circle></g><rect class="hit" x="44" y="34" width="892" height="316" fill="transparent"></rect></svg><div class="tip"></div></div><details><summary>按月查看数字</summary><table><thead><tr><th>月份</th><th>Android 日均</th><th>iOS 日均</th></tr></thead><tbody><tr><td>2020 年 9 月</td><td>8,958</td><td>5,969</td></tr><tr><td>2020 年 10 月</td><td>5,922</td><td>4,174</td></tr><tr><td>2020 年 11 月</td><td>9,122</td><td>5,041</td></tr><tr><td>2020 年 12 月</td><td>7,684</td><td>4,054</td></tr><tr><td>2021 年 1 月</td><td>10,231</td><td>5,213</td></tr><tr><td>2021 年 2 月</td><td>5,338</td><td>2,999</td></tr><tr><td>2021 年 3 月</td><td>11,364</td><td>6,004</td></tr></tbody></table></details></div></figure><script type="module" src="/_astro/DauChart.astro_astro_type_script_index_0_lang.BjItTjrx.js"></script>
+<p>三个信号：</p>
+<ul>
+<li><strong>会话很短。</strong> 半分钟里还要算上启动和跳转，真正看内容的时间更少。</li>
+<li><strong>跟着校历走。</strong> 开学周两端合计超过两万，国庆和春节只剩四千。有课才有需求。</li>
+<li><strong>工作日高于周末。</strong> 周一最高，约 14,800；周六最低，约 9,400。</li>
+</ul>
+<p>这是查询的形态，不是浏览的形态。学生带着一个问题进来，拿到答案就走。对这样的产品，多一次点击、多一秒启动，都是纯粹的损耗。</p>
+<h2 id="2-设计理念校园负一屏">2. 设计理念：校园负一屏</h2>
+<p>v3 的首页是一排入口：成绩、课表、考试各占一个图标，答案都在下一层。对“查一件事就走”的用法，入口本身就是多余的一步。</p>
+<p>负一屏正好对应这种用法。它有三个特点，v4 逐条照搬：</p>
+<ul>
+<li><strong>汇总。</strong> 多个来源的答案摆在同一屏，一眼扫完。</li>
+<li><strong>一块组件，一个问题。</strong> 每个组件只回答一件事，答案直接写在组件上，不需要点进去。</li>
+<li><strong>用户自己编排。</strong> 放哪些组件、按什么顺序，由用户决定。</li>
+</ul>
+<p>负一屏回答的是“放什么”。“放多近”由另一个变量决定：问题多久变一次。高频问题的答案都只有一行：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>问题</th><th>答案</th><th>什么时候问</th><th>多久变一次</th></tr></thead><tbody><tr><td>还有多久下课</td><td>剩余时间</td><td>课上</td><td>每分钟</td></tr><tr><td>下节课在哪</td><td>课名、教室、时间</td><td>课前和课间</td><td>每节课</td></tr><tr><td>离考试还有几天</td><td>天数、科目、考场</td><td>考试周前</td><td>每天</td></tr><tr><td>绩点是多少</td><td>一个数字</td><td>出分时</td><td>每学期几次</td></tr></tbody></table>
+<p>变得越快，越不该让学生进 App 去取。v4 按这个频率给信息分层：<strong>越常被需要的信息，离用户越近；最常用的，不打开 App 就能看到。</strong></p>
+<div class="qsc"><div class="ladder"><div class="rung"><div class="taps">0<small>次点击</small></div><div><b>手机桌面与系统负一屏</b><span>每分钟到每节课更新的信息：倒计时、当前和下一项日程。</span></div></div><div class="rung"><div class="taps">1<small>次点击</small></div><div><b>App 首页：校园负一屏</b><span>每天到每学期更新的信息：日程全貌、临近考试、绩点。打开即见，不再跳转。</span></div></div><div class="rung"><div class="taps">2+<small>次点击</small></div><div><b>详情页与工具盒</b><span>一学期用几次的功能：校网充值、体测成绩、空教室等。</span></div></div></div></div>
+<p>这条原则同样决定了什么不该上首页：一学期用几次的功能，不管多重要，都收进工具盒。</p>
+<h2 id="3-倒计时一眼读完">3. 倒计时：一眼读完</h2>
+<p>上课时，学生最常问的不是“下节课是什么”，而是“还有多久下课”。所以倒计时是第一层的核心。它用环表示剩余比例：不用读数字，看环还剩多少，就知道快结束了还是刚开始。</p>
+<p>一天里它要处理三种状态：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>状态</th><th>什么时候</th><th>显示</th></tr></thead><tbody><tr><td>进行中</td><td>正在上课或参加活动</td><td>“距下课”或“距结束”，环表示剩余比例</td></tr><tr><td>等待中</td><td>两件事之间</td><td>“距上课”或“距开始”</td></tr><tr><td>当日结束</td><td>今天没有安排了</td><td>明天的第一件事</td></tr></tbody></table>
+<figure class="qsc"><div class="shots three crop"><div class="shot"><a href="/_astro/home-2021-07-30.Bm8tz6O5_vXLva.webp" target="_blank" rel="noopener"><img src="/_astro/home-2021-07-30.Bm8tz6O5_ZJNAkv.webp" width="640" height="1816" alt="2021 年 7 月的首页稿：日程卡里每一行都有一个橙色的环" loading="lazy" decoding="async"></a><div class="cap"><b>第一版</b>每一行日程各带一个环。</div></div><div class="shot"><a href="/_astro/app-home.DEc6O0iO_ZzRpHe.webp" target="_blank" rel="noopener"><img src="/_astro/app-home.DEc6O0iO_BKHvH.webp" width="640" height="1652" alt="2022 年 9 月的首页稿：一个蓝色大环显示距下课 10:12" loading="lazy" decoding="async"></a><div class="cap"><b>第二版 · App 内</b>只给当前这件事留一个环。</div></div><div class="shot"><a href="/_astro/home-countdown.kPRR59pV_27hSjb.webp" target="_blank" rel="noopener"><img src="/_astro/home-countdown.kPRR59pV_1YSGx3.webp" width="640" height="1387" alt="2022 年 9 月的桌面稿：一个独立的倒计时小组件" loading="lazy" decoding="async"></a><div class="cap"><b>第二版 · 桌面</b>同一个环做成小组件。</div></div></div></figure>
+<p>第一版给每一行日程都配了环，很快暴露两个问题：三个环同时出现，眼睛不知道看哪个；三小时后才开始的事，它的剩余比例此刻没有意义。第二版只给当前这件事留一个环，其余事项退回文字。一个组件只回答一个问题。</p>
+<aside class="qsc-tech"><b>平台约束决定精度</b><div>iOS 的 WidgetKit 不让小组件持续运行，界面只能按预先提交的时间线切换，刷新粒度是分钟。所以桌面上的环按分钟前进，秒级读数只放在 App 内；桌面上需要读秒时，交给系统自带的计时文本。</div></aside>
+<h2 id="4-尺寸面积决定说多少">4. 尺寸：面积决定说多少</h2>
+<p>桌面面积是用户分的，不是我们定的。同一份日程，在小方块和横条里能说的话不一样。我们先画了六种尺寸，目的不是全部上线，而是排清信息的优先级：面积每缩小一档，先放弃什么。</p>
+<p>顺序是：先去地点，再去结束时间，最后把排不下的事项折成一个计数。地点只在课前有用，常去的教室大多记得住；剩余时间和课名每一眼都要看；计数至少告诉用户“后面还有”。</p>
+<figure class="qsc"><div class="play"><div class="play-top"><div class="play-time"><span data-qsc-live="clock-s">09:22:48</span><small data-qsc-live="mode-long">演示时间</small></div><button class="btn" type="button" data-qsc-back>回到现在</button></div><div class="track"><div class="bar"><div class="seg" style="--c:#42acef;left:6.666666666666667%;width:10.555555555555555%"></div><div class="seg" style="--c:#43c4d7;left:30%;width:20%"></div><div class="seg" style="--c:#f2a23a;left:53.333333333333336%;width:8.333333333333332%"></div><div class="seg" style="--c:#e48ccc;left:78.88888888888889%;width:15.555555555555555%"></div></div><div class="needle" style="left:15.866666666666662%"></div><input type="range" min="420" max="1320" step="1" value="563" aria-label="时间"></div><div class="ticks"><span>07:00</span><span>10:00</span><span>13:00</span><span>16:00</span><span>19:00</span><span>22:00</span></div><div class="board"><div class="slot"><div class="z" data-qsc-w="count"><div class="wg wg-count"><div class="ring"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="bg" cx="50" cy="50" r="46" stroke-width="8"/><circle cx="50" cy="50" r="46" stroke="#f1805f" stroke-width="8" stroke-dasharray="37.11709046725456 289.02652413026095" stroke-dashoffset="-251.90943366300638"/></svg><div class="ring-c"><i>距下课</i><b>12:12</b><span>微积分(甲) II</span></div></div><div class="place">紫金港东2-103(录播)</div><div class="dots"><u></u><u></u><u></u><u></u></div></div></div><div class="label">147 × 162</div></div><div class="slot"><div class="z" data-qsc-w="large"><div class="wg wg-large"><div class="head"><div><div class="nm">微积分(甲) II</div><div class="sub">紫金港东2-103(录播)</div><div class="sub n">08:00-09:35</div></div><div class="ring"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="bg" cx="50" cy="50" r="43" stroke-width="14"/><circle cx="50" cy="50" r="43" stroke="#f1805f" stroke-width="14" stroke-dasharray="34.696410654172745 270.1769682087222" stroke-dashoffset="-235.48055755454945"/></svg><div class="ring-c"><b>12:12</b></div></div></div><div class="list"><div class="chip" style="--c:#43c4d7"><b>参观行为艺术展</b><span>紫金港小剧场 B217</span><span class="n">11:30-14:30</span></div><div class="chip" style="--c:#f2a23a"><b>军体王八拳</b><span>紫金港风雨操场</span><span class="n">15:00-16:15</span></div><div class="chip more">3 个课程 1 个事件</div></div></div></div><div class="label">235 × 264</div></div><div class="slot"><div class="z" data-qsc-w="wide"><div class="wg wg-wide"><div><div class="lab">距下课</div><div class="big n">00:12:12</div><div class="nm">微积分(甲) II</div><div class="sub">紫金港东2-103(录播)</div><div class="sub n">08:00-09:35</div></div><div class="list"><div class="chip" style="--c:#43c4d7"><b>参观行为艺术展</b><span>紫金港小剧场 B217</span><span class="n">11:30-14:30</span></div><div class="chip" style="--c:#f2a23a"><b>军体王八拳</b><span>紫金港风雨操场</span><span class="n">15:00-16:15</span></div><div class="chip more">还有 1 项</div></div></div></div><div class="label">326 × 169</div></div><div class="slot"><div class="z" data-qsc-w="slim-h"><div class="wg wg-slim h"><div class="pill" style="--c:#42acef"><span class="n">08:00</span><b>微积分(甲)Ⅱ</b></div><div class="pill" style="--c:#43c4d7"><span class="n">11:30</span><b>行为艺术展</b></div><div class="pill" style="--c:#f2a23a"><span class="n">15:00</span><b>军体王八拳</b></div><div class="pill rest">1+</div></div></div><div class="label">234 × 60</div></div><div class="slot"><div class="z" data-qsc-w="slim-v"><div class="wg wg-slim v"><div class="pill" style="--c:#42acef"><span class="n">08:00</span><b>微积分(甲)Ⅱ</b></div><div class="pill" style="--c:#43c4d7"><span class="n">11:30</span><b>行为艺术展</b></div><div class="pill" style="--c:#f2a23a"><span class="n">15:00</span><b>军体王八拳</b></div><div class="pill" style="--c:#e48ccc"><span class="n">18:50</span><b>经济学导论</b></div></div></div><div class="label">59 × 264</div></div></div></div></figure><script type="module" src="/_astro/Playground.astro_astro_type_script_index_0_lang.EA-XHHvT.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>尺寸</th><th>显示内容</th><th>系统尺寸</th></tr></thead><tbody><tr><td>147 × 162</td><td>当前事项的环、剩余时间、名称、地点</td><td>小号</td></tr><tr><td>326 × 169</td><td>剩余时间，当前事项的名称、地点、时间，后续 2 项，剩余项数</td><td>中号</td></tr><tr><td>235 × 264</td><td>当前事项与环，后续 2 项，当日课程数与事件数</td><td>无</td></tr><tr><td>146 × 265</td><td>后续事项列表，至多 4 项</td><td>无</td></tr><tr><td>234 × 60</td><td>3 项的开始时间与名称，剩余项数</td><td>无</td></tr><tr><td>59 × 264</td><td>4 项的开始时间与名称，剩余项数</td><td>无</td></tr></tbody></table>
+<p>优先级排清之后，映射到系统尺寸就是机械的工作：小号放环，中号放环加后续两项。</p>
+<figure class="qsc"><div class="shots five"><div class="shot"><a href="/_astro/home-wide.Bx2u9B3p_WT9vx.webp" target="_blank" rel="noopener"><img src="/_astro/home-wide.Bx2u9B3p_SQ8mz.webp" width="640" height="1387" alt="桌面稿：横向日程小组件" loading="lazy" decoding="async"></a></div><div class="shot"><a href="/_astro/home-tall.FY-SEYYF_20GGhe.webp" target="_blank" rel="noopener"><img src="/_astro/home-tall.FY-SEYYF_1VDF8g.webp" width="640" height="1387" alt="桌面稿：窄竖日程小组件" loading="lazy" decoding="async"></a></div><div class="shot"><a href="/_astro/home-large.Bzcj1U7b_RUCrD.webp" target="_blank" rel="noopener"><img src="/_astro/home-large.Bzcj1U7b_ZXAzBp.webp" width="640" height="1387" alt="桌面稿：近方形日程小组件" loading="lazy" decoding="async"></a></div><div class="shot"><a href="/_astro/home-slim.D0G_TqDr_1jTxwg.webp" target="_blank" rel="noopener"><img src="/_astro/home-slim.D0G_TqDr_1fQwni.webp" width="640" height="1387" alt="桌面稿：横、竖两种极瘦日程条" loading="lazy" decoding="async"></a></div><div class="shot"><a href="/_astro/home-countdown.kPRR59pV_27hSjb.webp" target="_blank" rel="noopener"><img src="/_astro/home-countdown.kPRR59pV_1YSGx3.webp" width="640" height="1387" alt="桌面稿：独立倒计时小组件" loading="lazy" decoding="async"></a></div></div></figure>
+<h2 id="5-首页一叠小组件">5. 首页：一叠小组件</h2>
+<p>打开 App 的人，第一屏就应该看到答案，而不是入口。首页上的每张卡片本身就是一个小组件，和放到手机桌面上的是同一套：同样的倒计时环，同样的日程条，只是换了容器。学生在 App 里看惯的组件，挪到桌面上不需要重新认识。</p>
+<p>编辑方式也照搬系统负一屏：在组件 Gallery 里增删，拖动排序。大一要看课表，大四只看绩点和校车，没有一种排列对所有人都对，所以首页不设固定顺序。</p>
+<figure class="qsc"><div class="editor" data-locale="zh"><div class="phone" aria-label="可编排的首页"><div class="phone-top">MOBILE</div><div class="cards"><div class="hc" draggable="true" data-id="ring"><div class="hc-h" style="--c:#586fc2"><i></i>课程<span class="mv"><button type="button" data-mv="-1" aria-label="上移">↑</button><button type="button" data-mv="1" aria-label="下移">↓</button></span></div><div data-qsc-w="app-ring"><div class="hc-ring"><div class="ring"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="bg" cx="50" cy="50" r="47.5" stroke-width="5"/><circle cx="50" cy="50" r="47.5" stroke="#586fc2" stroke-width="5" stroke-dasharray="38.32743037379547 298.45130209103036" stroke-dashoffset="-260.12387171723486"/></svg><div class="ring-c"><i>距下课</i><b>12:12</b></div></div><div><div class="nm">微积分(甲) II</div><div class="sub">紫金港东2-103(录播)</div><div class="sub n">08:00-09:35</div></div></div></div></div><div class="hc" draggable="true" data-id="sched"><div class="hc-h" style="--c:#f1805f"><i></i>日程<span class="mv"><button type="button" data-mv="-1" aria-label="上移">↑</button><button type="button" data-mv="1" aria-label="下移">↓</button></span></div><div data-qsc-w="app-sched"><div class="hc-sched"><div><div class="big n">00:12:12</div><div class="nm">微积分(甲) II</div><div class="sub">紫金港东2-103(录播)</div><div class="sub n">08:00-09:35</div></div><div class="list"><div class="chip" style="--c:#43c4d7"><b>参观行为艺术展</b><span>紫金港小剧场 B217</span><span class="n">11:30-14:30</span></div><div class="chip" style="--c:#f2a23a"><b>军体王八拳</b><span>紫金港风雨操场</span><span class="n">15:00-16:15</span></div><div class="chip more">还有 1 项</div></div></div></div></div><div class="hc" draggable="true" data-id="gpa"><div class="hc-h" style="--c:#f1805f"><i></i>绩点<span class="mv"><button type="button" data-mv="-1" aria-label="上移">↑</button><button type="button" data-mv="1" aria-label="下移">↓</button></span></div><div class="hc-gpa"><div><div class="k">平均绩点</div><div class="v" data-gpa="4.99">4.99<small>/98</small></div></div><div><div class="k">学分</div><div class="v" data-gpa="56">56<small>/156</small></div></div><button class="eye" type="button" aria-label="隐藏或显示绩点" aria-pressed="false">◉</button></div></div><div class="hc" draggable="true" data-id="tools"><div class="hc-h" style="--c:#43c4d7"><i></i>工具盒<span class="mv"><button type="button" data-mv="-1" aria-label="上移">↑</button><button type="button" data-mv="1" aria-label="下移">↓</button></span></div><div class="tools"><div class="tool" style="--c:#8e7bd6">校车</div><div class="tool" style="--c:#42acef">校网</div><div class="tool" style="--c:#f2a23a">校园卡</div><div class="tool" style="--c:#3fbf9b">体测</div><div class="tool" style="--c:#f1805f">空教室</div><div class="tool" style="--c:#586fc2">通行码</div><div class="tool" style="--c:#e48ccc">智云</div><div class="tool more-t">···</div></div></div></div></div><div class="gallery"><h4>组件 Gallery</h4><p>点选增删卡片，拖动卡片调整顺序。</p><div class="gchips"><button class="gchip" type="button" data-id="ring" aria-pressed="true">课程</button><button class="gchip" type="button" data-id="sched" aria-pressed="true">日程</button><button class="gchip" type="button" data-id="exam" aria-pressed="false">考试</button><button class="gchip" type="button" data-id="gpa" aria-pressed="true">绩点</button><button class="gchip" type="button" data-id="tools" aria-pressed="true">工具盒</button></div><table><thead><tr><th>卡片</th><th>首屏显示</th></tr></thead><tbody><tr><td>课程</td><td>当前或下一节课的倒计时、教室</td></tr><tr><td>日程</td><td>当前事项与后续两项，剩余项数</td></tr><tr><td>考试</td><td>最近一门的剩余天数、科目、考场</td></tr><tr><td>绩点</td><td>平均绩点与学分，可一键隐藏数值</td></tr><tr><td>工具盒</td><td>低频工具的入口网格</td></tr></tbody></table></div></div></figure><script type="module" src="/_astro/HomeEditor.astro_astro_type_script_index_0_lang.DiDVekpP.js"></script>
+<figure class="qsc"><div class="shots three crop"><div class="shot"><a href="/_astro/app-home-greeting.Bh87Qw5E_fjvpW.webp" target="_blank" rel="noopener"><img src="/_astro/app-home-greeting.Bh87Qw5E_zItzn.webp" width="640" height="1388" alt="首页稿：早上好、日程、绩点和考试卡" loading="lazy" decoding="async"></a><div class="cap"><b>首页</b>问候、日程、绩点、考试。</div></div><div class="shot"><a href="/_astro/app-schedule.OcJpAE2K_14SQ69.webp" target="_blank" rel="noopener"><img src="/_astro/app-schedule.OcJpAE2K_27RrHW.webp" width="640" height="1478" alt="日程页稿：校历、时间轴和当天安排" loading="lazy" decoding="async"></a><div class="cap"><b>日程页</b>校历、当日时间轴、事项列表。</div></div><div class="shot"><a href="/_astro/app-home.DEc6O0iO_ZzRpHe.webp" target="_blank" rel="noopener"><img src="/_astro/app-home.DEc6O0iO_BKHvH.webp" width="640" height="1652" alt="首页稿：倒计时、日程和工具入口" loading="lazy" decoding="async"></a><div class="cap"><b>首页的另一种排列</b>倒计时、日程、工具入口。</div></div></div></figure>
+<h2 id="6-日程贴着真实的一天">6. 日程：贴着真实的一天</h2>
+<ul>
+<li><strong>蹭课。</strong> 很多学生会去听别的课。按课名、时间或地点搜到不在自己课表上的课，一键加入，课表才反映真实的一天。</li>
+<li><strong>拖出一段时间。</strong> 新建事项时按住空白处拖出起止，移动时按 15 分钟吸附并振动一下。在手机上，没人想精确输入 14:05。</li>
+<li><strong>三种视图。</strong> 列表看今天，三日看接下来，周视图看整体。顶部的校历标出选课、军训和假期这些全校共享的节点。</li>
+</ul>
+<h2 id="7-工具盒低频功能的去处">7. 工具盒：低频功能的去处</h2>
+<p>校网充值、体测成绩、校园卡流水、通行码，每个学生都会用，但一学期只用几次。它们进工具盒，不占首页。</p>
+<p>工具盒里的网页工具也能单独添加到手机桌面，这是负一屏思路的延伸。通行码对有些学生每天都要出示，那它就该升到第一层。频率因人而异，分层也应该允许个人调整。</p>
+<p>我希望工具盒最终是开放的：每个工具是能独立更新的插件，加一个新工具不必等 App 发版，学生也能自己写。校园里的长尾需求太多，一个团队做不完。</p>
+<h2 id="8-数据要对得起信任">8. 数据要对得起信任</h2>
+<p>App 的数据来自教务系统，会有延迟，偶尔会不一致。学生会按 App 上的时间去考试，所以这里的错误代价不对称：</p>
+<ul>
+<li><strong>考试卡把提醒写进标题</strong>：“考试（请以教务网为准）”。误考的代价太高，提醒不能藏在页脚。</li>
+<li><strong>卡片显示上次更新时间</strong>，让用户自己判断要不要刷新。</li>
+<li><strong>绩点可以一键隐藏。</strong> 在教室里、室友旁边打开 App，成绩不该直接摊开。</li>
+</ul>
+<h2 id="9-mvp先做第一层">9. MVP：先做第一层</h2>
+<p>改版的价值全押在离用户最近的那一层上，所以它必须最先可用。MVP 只保留回答最高频问题的部分：首页的日程、考试和工具入口；小组件只做系统支持的小号和中号。</p>
+<p>v4 于 2023 年 3 月上架 App Store。</p></article></main><footer class="site-footer"><span>© 2026 <a href="/zh/">Jun Yu</a></span><div class="footer-actions"><a class="footer-language" href="/posts/qsc-mobile-v4/" hreflang="en" aria-label="切换至英文">CN</a><a href="/zh/index.xml">RSS</a></div></footer></body></html>
